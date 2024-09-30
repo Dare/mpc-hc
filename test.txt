@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Replace with your group ID and access token
+GROUP_ID=<your-group-id>
+TOKEN=<your-access-token>
+
+# Get all projects in the group
+PROJECTS=$(glab api /groups/$GROUP_ID/projects --output=json | jq -r '.[].id')
+
+# Loop through each project and update the squash_option
+for PROJECT_ID in $PROJECTS; do
+  echo "Updating project ID: $PROJECT_ID"
+  
+  # Update the squash option for the project
+  glab api PUT /projects/$PROJECT_ID \
+    --header "PRIVATE-TOKEN: $TOKEN" \
+    -d '{"squash_option": "always"}'
+
+  echo "Project $PROJECT_ID updated."
+done
